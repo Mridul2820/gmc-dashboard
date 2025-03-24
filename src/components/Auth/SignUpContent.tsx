@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { gmcAuthToken, validEmailRegex, validPasswordRegex } from "@/constant";
+import { gmcAuthToken, validEmailRegex } from "@/constant";
 import { signUpAPi } from "@/api/authApis";
 
 import {

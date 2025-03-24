@@ -10,12 +10,13 @@ import { object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { gmcAuthToken, validEmailRegex, validPasswordRegex } from "@/constant";
+import { gmcAuthToken, validEmailRegex } from "@/constant";
 import { loginAPi } from "@/api/authApis";
 import Loading from "../ui/loading";
 
 export default function LoginContent() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const validationSchema = object({
     email: string()
       .matches(validEmailRegex, "Invalid email address")
@@ -28,7 +29,6 @@ export default function LoginContent() {
       .matches(/[0-9]/, "Please enter at least one number")
       .matches(/^(?!.*\s).+$/, "Password cannot contain spaces"),
   });
-  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -46,9 +46,11 @@ export default function LoginContent() {
           Cookies.set(gmcAuthToken, res.data.data.token);
           router.push("/dashboard");
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoading(false);
-        toast.error("Invalid email or password");
+        toast.error(
+          error.response.data.error || error.response.data.errors[0].message
+        );
       }
     },
   });

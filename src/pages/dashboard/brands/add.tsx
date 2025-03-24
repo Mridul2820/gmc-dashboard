@@ -1,7 +1,12 @@
 import React from "react";
+import dynamic from "next/dynamic";
 
-const AddBrand = () => {
-  return <div></div>;
+const AddBrandContent = dynamic(
+  () => import("@/components/Brand/AddBrandContent")
+);
+
+const AllBrands = () => {
+  return <AddBrandContent />;
 };
 
-export default AddBrand;
+export default AllBrands;
