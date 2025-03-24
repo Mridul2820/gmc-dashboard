@@ -16,6 +16,7 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { brandItemType } from "@/types/brandType";
+import { Skeleton } from "../ui/skeleton";
 
 const AllBrandContent = () => {
   const token = Cookies.get(gmcAuthToken);
@@ -62,7 +63,14 @@ const AllBrandContent = () => {
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, index) => (
+              <Skeleton
+                key={index}
+                className="w-full h-40 object-cover rounded-md mb-2"
+              />
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {brands?.map((brand) => (
