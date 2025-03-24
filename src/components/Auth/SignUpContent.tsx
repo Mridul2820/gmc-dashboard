@@ -5,11 +5,12 @@ import { useFormik } from "formik";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { object, string } from "yup";
+import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { validEmailRegex } from "@/constant";
+import { gmcAuthToken, validEmailRegex, validPasswordRegex } from "@/constant";
 import { signUpAPi } from "@/api/authApis";
 
 import {
@@ -19,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Loading from "../ui/loading";
 
 export default function SignUpContent() {
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,13 @@ export default function SignUpContent() {
     email: string()
       .matches(validEmailRegex, "Invalid email address")
       .required("Email cannot be empty!"),
-    password: string().required("Password cannot be empty!"),
+    password: string()
+      .required("Please enter password")
+      .min(8, "Please enter at least 8 characters")
+      .matches(/[A-Z]/, "Please enter at least one uppercase letter")
+      .matches(/[a-z]/, "Please enter at least one lowercase letter")
+      .matches(/[0-9]/, "Please enter at least one number")
+      .matches(/^(?!.*\s).+$/, "Password cannot contain spaces"),
   });
   const router = useRouter();
 
@@ -45,16 +53,28 @@ export default function SignUpContent() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      const data = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        role: values.role,
+        phoneNumber: values.phoneNumber?.toString(),
+        email: values.email,
+        password: values.password,
+      };
       try {
         setLoading(true);
-        const res = await axios.post(signUpAPi, values);
-        if (res.status === 200) {
+        const res = await axios.post(signUpAPi, data);
+        if (res.data.success === true) {
           toast.success("Signup Success");
           setLoading(false);
+          Cookies.set(gmcAuthToken, res.data.token);
           router.push("/dashboard");
         }
-      } catch (error) {
+      } catch (error: any) {
         setLoading(false);
+        toast.error(
+          error.response.data.error || error.response.data.errors[0].message
+        );
       }
     },
   });
@@ -158,7 +178,7 @@ export default function SignUpContent() {
               ) : null}
             </div>
 
-            <div className="space-y-0.5">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-title text-sm">
                   Password
@@ -174,9 +194,13 @@ export default function SignUpContent() {
                 onBlur={formik.handleBlur}
                 value={formik.values.password}
               />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="error-message">{formik.errors.password}</div>
+              ) : null}
             </div>
-
-            <Button className="w-full">Sign up</Button>
+            <Button className="w-full" type="submit" disabled={loading}>
+              {loading ? <Loading /> : "Sign Up"}
+            </Button>
           </div>
         </div>
 

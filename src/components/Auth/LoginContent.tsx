@@ -9,7 +9,7 @@ import { object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { validEmailRegex } from "@/constant";
+import { validEmailRegex, validPasswordRegex } from "@/constant";
 import { loginAPi } from "@/api/authApis";
 import Loading from "../ui/loading";
 
@@ -19,7 +19,17 @@ export default function LoginContent() {
     email: string()
       .matches(validEmailRegex, "Invalid email address")
       .required("Email cannot be empty!"),
-    password: string().required("Password cannot be empty!"),
+    password: string()
+      .required("Please enter password")
+      .min(8, "Please enter at least 8 characters")
+      .matches(/[A-Z]/, "Please enter at least one uppercase letter")
+      .matches(/[a-z]/, "Please enter at least one lowercase letter")
+      .matches(/[0-9]/, "Please enter at least one number")
+      .matches(/^(?!.*\s).+$/, "Password cannot contain spaces")
+      .matches(
+        validPasswordRegex,
+        "Please enter at least one special character"
+      ),
   });
   const router = useRouter();
 
