@@ -19,6 +19,7 @@ export default function LoginContent() {
     email: string()
       .matches(validEmailRegex, "Invalid email address")
       .required("Email cannot be empty!"),
+    password: string().required("Password cannot be empty!"),
   });
   const router = useRouter();
 
