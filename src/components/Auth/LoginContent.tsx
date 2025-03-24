@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { validEmailRegex } from "@/constant";
-
 import { loginAPi } from "@/api/authApis";
+import Loading from "../ui/loading";
 
 export default function LoginContent() {
+  const [loading, setLoading] = useState(false);
   const validationSchema = object({
     email: string()
       .matches(validEmailRegex, "Invalid email address")
@@ -29,12 +30,17 @@ export default function LoginContent() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        setLoading(true);
         const res = await axios.post(loginAPi, values);
         if (res.status === 200) {
           toast.success("Login Success");
+          setLoading(false);
           router.push("/dashboard");
         }
-      } catch (error) {}
+      } catch (error) {
+        setLoading(false);
+        toast.error("Invalid email or password");
+      }
     },
   });
 
@@ -97,7 +103,7 @@ export default function LoginContent() {
               type="submit"
               disabled={!formik.isValid || formik.isSubmitting}
             >
-              Sign In
+              {loading ? <Loading /> : "Sign In"}
             </Button>
           </div>
         </div>
