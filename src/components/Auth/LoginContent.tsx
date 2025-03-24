@@ -1,10 +1,27 @@
 import Link from "next/link";
-import { Logo } from "@/components/logo";
+import { useFormik } from "formik";
+import { object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginContent() {
+  const validationSchema = object({
+    email: string()
+      .matches(validEmailRegex, "Invalid email address")
+      .required("Email cannot be empty!"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent text-black">
       <form
@@ -13,17 +30,10 @@ export default function LoginContent() {
       >
         <div className="p-8 pb-6">
           <div>
-            <Link href="/" aria-label="go home">
-              <Logo />
-            </Link>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
-              Sign In to Tailus UI
-            </h1>
+            <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to</h1>
             <p className="text-sm">Welcome back! Sign in to continue</p>
           </div>
-
           <hr className="my-4 border-dashed" />
-
           <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">
@@ -31,7 +41,6 @@ export default function LoginContent() {
               </Label>
               <Input type="email" required name="email" id="email" />
             </div>
-
             <div className="space-y-0.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="pwd" className="text-title text-sm">
@@ -54,11 +63,9 @@ export default function LoginContent() {
                 className="input sz-md variant-mixed"
               />
             </div>
-
             <Button className="w-full">Sign In</Button>
           </div>
         </div>
-
         <div className="bg-muted rounded-(--radius) border p-3">
           <p className="text-accent-foreground text-center text-sm">
             Don&apos;t have an account ?
