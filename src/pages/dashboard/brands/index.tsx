@@ -1,8 +1,8 @@
 import React from "react";
-import SidebarLayout from "@/components/Layout/SidebarLayout";
+import AllBrandContent from "@/components/Brand/AllBrandContent";
 
 const AllBrands = () => {
-  return <SidebarLayout>test</SidebarLayout>;
+  return <AllBrandContent />;
 };
 
 export default AllBrands;
