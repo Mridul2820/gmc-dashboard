@@ -1,9 +1,17 @@
+import React from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import axios from "axios";
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
 import { object, string } from "yup";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { validEmailRegex } from "@/constant";
+
+import { loginAPi } from "@/api/authApis";
 
 export default function LoginContent() {
   const validationSchema = object({
@@ -11,21 +19,29 @@ export default function LoginContent() {
       .matches(validEmailRegex, "Invalid email address")
       .required("Email cannot be empty!"),
   });
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.post(loginAPi, values);
+        if (res.status === 200) {
+          toast.success("Login Success");
+          router.push("/dashboard");
+        }
+      } catch (error) {}
     },
   });
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent text-black">
       <form
-        action=""
+        onSubmit={formik.handleSubmit}
         className="bg-card m-auto h-fit w-full max-w-sm rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md"
       >
         <div className="p-8 pb-6">
@@ -37,33 +53,52 @@ export default function LoginContent() {
           <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">
-                Username
+                Email
               </Label>
-              <Input type="email" required name="email" id="email" />
+              <Input
+                type="email"
+                required
+                name="email"
+                id="email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+              />
+              {formik.touched.email && formik.errors.email ? (
+                <div className="text-sm text-destructive">
+                  {formik.errors.email}
+                </div>
+              ) : null}
             </div>
             <div className="space-y-0.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="pwd" className="text-title text-sm">
+                <Label htmlFor="password" className="text-title text-sm">
                   Password
                 </Label>
-                <Button asChild variant="link" size="sm">
-                  <Link
-                    href="#"
-                    className="link intent-info variant-ghost text-sm"
-                  >
-                    Forgot your Password ?
-                  </Link>
-                </Button>
               </div>
               <Input
                 type="password"
                 required
-                name="pwd"
-                id="pwd"
+                name="password"
+                id="password"
                 className="input sz-md variant-mixed"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
               />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="text-sm text-destructive">
+                  {formik.errors.password}
+                </div>
+              ) : null}
             </div>
-            <Button className="w-full">Sign In</Button>
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={!formik.isValid || formik.isSubmitting}
+            >
+              Sign In
+            </Button>
           </div>
         </div>
         <div className="bg-muted rounded-(--radius) border p-3">
