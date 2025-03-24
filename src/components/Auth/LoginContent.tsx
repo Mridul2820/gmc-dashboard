@@ -4,12 +4,13 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import { object, string } from "yup";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { validEmailRegex, validPasswordRegex } from "@/constant";
+import { gmcAuthToken, validEmailRegex, validPasswordRegex } from "@/constant";
 import { loginAPi } from "@/api/authApis";
 import Loading from "../ui/loading";
 
@@ -25,11 +26,7 @@ export default function LoginContent() {
       .matches(/[A-Z]/, "Please enter at least one uppercase letter")
       .matches(/[a-z]/, "Please enter at least one lowercase letter")
       .matches(/[0-9]/, "Please enter at least one number")
-      .matches(/^(?!.*\s).+$/, "Password cannot contain spaces")
-      .matches(
-        validPasswordRegex,
-        "Please enter at least one special character"
-      ),
+      .matches(/^(?!.*\s).+$/, "Password cannot contain spaces"),
   });
   const router = useRouter();
 
@@ -43,9 +40,10 @@ export default function LoginContent() {
       try {
         setLoading(true);
         const res = await axios.post(loginAPi, values);
-        if (res.status === 200) {
+        if (res.data.success === true) {
           toast.success("Login Success");
           setLoading(false);
+          Cookies.set(gmcAuthToken, res.data.data.token);
           router.push("/dashboard");
         }
       } catch (error) {
@@ -105,11 +103,7 @@ export default function LoginContent() {
                 <div className="error-message">{formik.errors.password}</div>
               ) : null}
             </div>
-            <Button
-              className="w-full"
-              type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
-            >
+            <Button className="w-full" type="submit" disabled={loading}>
               {loading ? <Loading /> : "Sign In"}
             </Button>
           </div>

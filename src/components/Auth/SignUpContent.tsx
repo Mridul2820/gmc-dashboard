@@ -67,7 +67,7 @@ export default function SignUpContent() {
         if (res.data.success === true) {
           toast.success("Signup Success");
           setLoading(false);
-          Cookies.set(gmcAuthToken, res.data.token);
+          Cookies.set(gmcAuthToken, res.data.data.token);
           router.push("/dashboard");
         }
       } catch (error: any) {
