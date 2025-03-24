@@ -23,6 +23,7 @@ const AllBrandContent = () => {
   const [loading, setLoading] = useState(true);
   const [brands, setBrands] = useState<brandItemType[]>([]);
   const [search, setSearch] = useState("");
+  const [tempSearch, setTempSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -56,10 +57,17 @@ const AllBrandContent = () => {
           <Input
             type="text"
             placeholder="Search brands..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={tempSearch}
+            onChange={(e) => setTempSearch(e.target.value)}
           />
-          <Button onClick={() => setPage(1)}>Search</Button>
+          <Button
+            onClick={() => {
+              setPage(1);
+              setSearch(tempSearch);
+            }}
+          >
+            Search
+          </Button>
         </div>
 
         {loading ? (
