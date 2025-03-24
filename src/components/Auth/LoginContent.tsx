@@ -72,9 +72,7 @@ export default function LoginContent() {
                 value={formik.values.email}
               />
               {formik.touched.email && formik.errors.email ? (
-                <div className="text-sm text-destructive">
-                  {formik.errors.email}
-                </div>
+                <div className="error-message">{formik.errors.email}</div>
               ) : null}
             </div>
             <div className="space-y-0.5">
@@ -94,9 +92,7 @@ export default function LoginContent() {
                 value={formik.values.password}
               />
               {formik.touched.password && formik.errors.password ? (
-                <div className="text-sm text-destructive">
-                  {formik.errors.password}
-                </div>
+                <div className="error-message">{formik.errors.password}</div>
               ) : null}
             </div>
             <Button

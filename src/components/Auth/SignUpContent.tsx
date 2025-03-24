@@ -1,21 +1,31 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { object, string } from "yup";
-import { validEmailRegex } from "@/constant";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import axios from "axios";
-import { signUpAPi } from "@/api/authApis";
 import toast from "react-hot-toast";
+import { object, string } from "yup";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { validEmailRegex } from "@/constant";
+import { signUpAPi } from "@/api/authApis";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function SignUpContent() {
   const [loading, setLoading] = useState(false);
   const validationSchema = object({
     firstName: string().required("Firstname cannot be empty!"),
     lastName: string().required("Lastname cannot be empty!"),
+    role: string().required("Role cannot be empty!"),
     phoneNumber: string().required("Phone number cannot be empty!"),
     email: string()
       .matches(validEmailRegex, "Invalid email address")
@@ -28,6 +38,7 @@ export default function SignUpContent() {
     initialValues: {
       firstName: "",
       lastName: "",
+      role: "",
       phoneNumber: "",
       email: "",
       password: "",
@@ -77,9 +88,7 @@ export default function SignUpContent() {
                   value={formik.values.firstName}
                 />
                 {formik.touched.firstName && formik.errors.firstName ? (
-                  <div className="text-sm text-destructive">
-                    {formik.errors.firstName}
-                  </div>
+                  <div className="error-message">{formik.errors.firstName}</div>
                 ) : null}
               </div>
               <div className="space-y-2">
@@ -94,15 +103,33 @@ export default function SignUpContent() {
                   onBlur={formik.handleBlur}
                   value={formik.values.lastName}
                 />
+                {formik.touched.lastName && formik.errors.lastName ? (
+                  <div className="error-message">{formik.errors.lastName}</div>
+                ) : null}
               </div>
             </div>
-
+            <div className="space-y-2">
+              <Select
+                value={formik.values.role}
+                onValueChange={(value) => formik.setFieldValue("role", value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="customer">Customer</SelectItem>
+                </SelectContent>
+              </Select>
+              {formik.touched.role && formik.errors.role ? (
+                <div className="error-message">{formik.errors.role}</div>
+              ) : null}
+            </div>
             <div className="space-y-2">
               <Label htmlFor="phoneNumber" className="block text-sm">
                 Phone Number
               </Label>
               <Input
-                type="text"
+                type="number"
                 name="phoneNumber"
                 id="phoneNumber"
                 onChange={formik.handleChange}
@@ -110,9 +137,7 @@ export default function SignUpContent() {
                 value={formik.values.phoneNumber}
               />
               {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
-                <div className="text-sm text-destructive">
-                  {formik.errors.phoneNumber}
-                </div>
+                <div className="error-message">{formik.errors.phoneNumber}</div>
               ) : null}
             </div>
 
@@ -129,9 +154,7 @@ export default function SignUpContent() {
                 value={formik.values.email}
               />
               {formik.touched.email && formik.errors.email ? (
-                <div className="text-sm text-destructive">
-                  {formik.errors.email}
-                </div>
+                <div className="error-message">{formik.errors.email}</div>
               ) : null}
             </div>
 
@@ -153,7 +176,7 @@ export default function SignUpContent() {
               />
             </div>
 
-            <Button className="w-full">Sign In</Button>
+            <Button className="w-full">Sign up</Button>
           </div>
         </div>
 
