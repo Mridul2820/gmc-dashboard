@@ -10,12 +10,13 @@ export const columns: ColumnDef<Product>[] = [
     header: 'IMAGE',
     cell: ({ row }) => {
       return (
-        <div className='relative aspect-square'>
+        <div className='relative aspect-square size-16'>
           <Image
-            src={row.getValue('photo_url')}
+            src={row.getValue('photo_url') || '/image-placeholder.png'}
             alt={row.getValue('name')}
-            fill
-            className='rounded-lg'
+            className='size-16 rounded-lg'
+            width={100}
+            height={100}
           />
         </div>
       );
@@ -25,19 +26,6 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: 'name',
     header: 'NAME'
   },
-  {
-    accessorKey: 'category',
-    header: 'CATEGORY'
-  },
-  {
-    accessorKey: 'price',
-    header: 'PRICE'
-  },
-  {
-    accessorKey: 'description',
-    header: 'DESCRIPTION'
-  },
-
   {
     id: 'actions',
     cell: ({ row }) => <CellAction data={row.original} />
