@@ -11,9 +11,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { gmcAuthToken } from '@/constant';
 import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 export function UserNav() {
   const { data: session } = useSession();
+  const router = useRouter();
   if (session) {
     return (
       <DropdownMenu>
@@ -47,7 +51,12 @@ export function UserNav() {
             <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>
+          <DropdownMenuItem
+            onClick={() => {
+              Cookies.remove(gmcAuthToken);
+              router.push('/');
+            }}
+          >
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

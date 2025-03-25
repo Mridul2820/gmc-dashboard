@@ -1,17 +1,20 @@
-// Protecting routes with next-auth
-// https://next-auth.js.org/configuration/nextjs#middleware
-// https://nextjs.org/docs/app/building-your-application/routing/middleware
+import { NextRequest, NextResponse } from 'next/server';
+import { gmcAuthToken } from './constant';
 
-import NextAuth from 'next-auth';
-import authConfig from '@/lib/auth.config';
-
-const { auth } = NextAuth(authConfig);
-
-export default auth((req) => {
-  if (!req.auth) {
-    const url = req.url.replace(req.nextUrl.pathname, '/');
-    return Response.redirect(url);
+export default function middleware(req: NextRequest) {
+  let loggedin = req.cookies.get(gmcAuthToken);
+  const { pathname } = req.nextUrl;
+  const privateRoutes = ['/dashboard'];
+  if (!loggedin) {
+    if (privateRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  } else {
+    if (pathname === '/' || pathname === '/signup' || pathname === '/signin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
   }
-});
-
-export const config = { matcher: ['/dashboard/:path*'] };
+}
+export const config = {
+  matcher: ['/((?!api|static|.*\\..*|_next).*)']
+};

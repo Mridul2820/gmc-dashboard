@@ -45,6 +45,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
+import { gmcAuthToken } from '@/constant';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 export const company = {
   name: 'Acme Inc',
@@ -56,6 +59,8 @@ export default function AppSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
+
+  const router = useRouter();
 
   return (
     <Sidebar collapsible='icon'>
@@ -202,7 +207,12 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    Cookies.remove(gmcAuthToken);
+                    router.push('/');
+                  }}
+                >
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

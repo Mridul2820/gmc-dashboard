@@ -2,12 +2,12 @@
 
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
   CreditCard,
   LogOut,
   Sparkles
 } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -25,6 +25,8 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar';
+import { gmcAuthToken } from '@/constant';
+import { useRouter } from 'next/router';
 
 export function NavUser({
   user
@@ -36,6 +38,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -94,7 +97,12 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                Cookies.remove(gmcAuthToken);
+                router.push('/');
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
