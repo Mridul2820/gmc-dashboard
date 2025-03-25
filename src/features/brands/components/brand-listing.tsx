@@ -1,21 +1,24 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Product } from '@/constants/data';
-import { searchParamsCache } from '@/lib/searchparams';
 import { DataTable as ProductTable } from '@/components/ui/table/data-table';
 import { columns } from './brands-tables/columns';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { getBrandsApi } from '@/api/brandApis';
 import { gmcAuthToken } from '@/constant';
+import { useSearchParams } from 'next/navigation';
 
 type ProductListingPage = {};
 
 export default function ProductListingPage({}: ProductListingPage) {
   const token = Cookies.get(gmcAuthToken);
-  const page = searchParamsCache.get('page');
-  const search = searchParamsCache.get('q');
-  const pageLimit = searchParamsCache.get('limit');
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page')
+    ? parseInt(searchParams.get('page') as string)
+    : 1;
+  const search = searchParams.get('q') || '';
+  const pageLimit = searchParams.get('limit') || 10;
   const [totalItems, setTotalItems] = useState(1);
   const [brands, setBrands] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +35,6 @@ export default function ProductListingPage({}: ProductListingPage) {
           }
         }
       );
-      console.log(res?.data?.data);
       setBrands(res?.data?.data?.data);
       setTotalItems(res?.data?.data?.pagination?.total);
     } catch (error) {
