@@ -1,14 +1,11 @@
 import { NavItem } from 'types';
 
 export type Product = {
-  photo_url: string;
+  id: string;
   name: string;
-  description: string;
-  created_at: string;
-  price: number;
-  id: number;
-  category: string;
-  updated_at: string;
+  logo: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.

@@ -1,33 +1,52 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { Product } from '@/constants/data';
-import { fakeProducts } from '@/constants/mock-api';
 import { searchParamsCache } from '@/lib/searchparams';
 import { DataTable as ProductTable } from '@/components/ui/table/data-table';
 import { columns } from './brands-tables/columns';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { getBrandsApi } from '@/api/brandApis';
+import { gmcAuthToken } from '@/constant';
 
 type ProductListingPage = {};
 
 export default async function ProductListingPage({}: ProductListingPage) {
+  const token = Cookies.get(gmcAuthToken);
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
   const pageLimit = searchParamsCache.get('limit');
-  const categories = searchParamsCache.get('categories');
+  const [totalItems, setTotalItems] = useState(1);
+  const [brands, setBrands] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search }),
-    ...(categories && { categories: categories })
+  const fetchBrands = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        getBrandsApi(search || '', page.toString(), pageLimit.toString()),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log(res?.data?.data);
+      setBrands(res?.data?.data?.data);
+      setTotalItems(res?.data?.data?.pagination?.total);
+    } catch (error) {
+      console.error('Error fetching brands', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
+  useEffect(() => {
+    fetchBrands();
+  }, [page, search]);
 
   return (
-    <ProductTable
-      columns={columns}
-      data={products}
-      totalItems={totalProducts}
-    />
+    <ProductTable columns={columns} data={brands} totalItems={totalItems} />
   );
 }
