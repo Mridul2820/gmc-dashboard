@@ -44,7 +44,7 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
 import { gmcAuthToken } from '@/constant';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 export const company = {

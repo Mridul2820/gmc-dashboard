@@ -116,6 +116,9 @@ export default function SignUpForm() {
           </div>
         </div>
         <div className='space-y-2'>
+          <Label htmlFor='phoneNumber' className='block text-sm'>
+            Select Role
+          </Label>
           <Select
             value={formik.values.role}
             onValueChange={(value) => formik.setFieldValue('role', value)}
@@ -186,7 +189,7 @@ export default function SignUpForm() {
           ) : null}
         </div>
         <Button className='w-full' type='submit' disabled={loading}>
-          {loading ? <Loading /> : 'Sign In'}
+          {loading ? <Loading /> : 'Sign Up'}
         </Button>
       </div>
 
