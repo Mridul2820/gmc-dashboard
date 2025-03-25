@@ -36,11 +36,9 @@ import {
   Bell,
   ChevronRight,
   ChevronsUpDown,
-  CreditCard,
   GalleryVerticalEnd,
   LogOut
 } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
@@ -56,10 +54,7 @@ export const company = {
 };
 
 export default function AppSidebar() {
-  const { data: session } = useSession();
   const pathname = usePathname();
-  const { state, isMobile } = useSidebar();
-
   const router = useRouter();
 
   return (
@@ -145,21 +140,21 @@ export default function AppSidebar() {
                   className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                 >
                   <Avatar className='h-8 w-8 rounded-lg'>
-                    <AvatarImage
+                    {/* <AvatarImage
                       src={session?.user?.image || ''}
                       alt={session?.user?.name || ''}
-                    />
+                    /> */}
                     <AvatarFallback className='rounded-lg'>
-                      {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
+                      {/* {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'} */}
                     </AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-left text-sm leading-tight'>
-                    <span className='truncate font-semibold'>
+                    {/* <span className='truncate font-semibold'>
                       {session?.user?.name || ''}
                     </span>
                     <span className='truncate text-xs'>
                       {session?.user?.email || ''}
-                    </span>
+                    </span> */}
                   </div>
                   <ChevronsUpDown className='ml-auto size-4' />
                 </SidebarMenuButton>
@@ -173,23 +168,23 @@ export default function AppSidebar() {
                 <DropdownMenuLabel className='p-0 font-normal'>
                   <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                     <Avatar className='h-8 w-8 rounded-lg'>
-                      <AvatarImage
+                      {/* <AvatarImage
                         src={session?.user?.image || ''}
                         alt={session?.user?.name || ''}
                       />
                       <AvatarFallback className='rounded-lg'>
                         {session?.user?.name?.slice(0, 2)?.toUpperCase() ||
                           'CN'}
-                      </AvatarFallback>
+                      </AvatarFallback> */}
                     </Avatar>
                     <div className='grid flex-1 text-left text-sm leading-tight'>
-                      <span className='truncate font-semibold'>
+                      {/* <span className='truncate font-semibold'>
                         {session?.user?.name || ''}
                       </span>
                       <span className='truncate text-xs'>
                         {' '}
                         {session?.user?.email || ''}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </DropdownMenuLabel>
