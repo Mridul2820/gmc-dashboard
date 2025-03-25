@@ -11,14 +11,14 @@ import { gmcAuthToken } from '@/constant';
 
 type ProductListingPage = {};
 
-export default async function ProductListingPage({}: ProductListingPage) {
+export default function ProductListingPage({}: ProductListingPage) {
   const token = Cookies.get(gmcAuthToken);
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
   const pageLimit = searchParamsCache.get('limit');
   const [totalItems, setTotalItems] = useState(1);
   const [brands, setBrands] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchBrands = async () => {
     setLoading(true);
