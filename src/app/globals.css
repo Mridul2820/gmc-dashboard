@@ -187,7 +187,7 @@
   --card-foreground: hsl(253 31% 99%);
   --border: hsl(215 27.9% 16.9%);
   --input: hsl(215 27.9% 16.9%);
-  --primary: hsl(253 91% 58%);
+  --primary: #0766b6;
   --primary-foreground: hsl(253 91% 98%);
   --secondary: hsl(253 7% 9%);
   --secondary-foreground: hsl(253 7% 69%);
@@ -226,5 +226,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .error-message {
+    @apply text-destructive text-xs;
   }
 }
