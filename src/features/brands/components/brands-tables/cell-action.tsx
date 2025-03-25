@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { deleteBrandApi } from '@/api/brandApis';
+import { singleBrandApi } from '@/api/brandApis';
 import { toast } from 'sonner';
 
 interface CellActionProps {
@@ -31,7 +31,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      const res = await axios.delete(deleteBrandApi(data.id), {
+      const res = await axios.delete(singleBrandApi(data.id), {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`

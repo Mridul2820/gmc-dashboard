@@ -1,6 +1,8 @@
 import { fakeProducts, Product } from '@/constants/mock-api';
 import { notFound } from 'next/navigation';
 import ProductForm from './brand-form';
+import axios from 'axios';
+import { singleBrandApi } from '@/api/brandApis';
 
 type TProductViewPageProps = {
   brandId: string;
@@ -13,8 +15,8 @@ export default async function ProductViewPage({
   let pageTitle = 'Create New Brand';
 
   if (brandId !== 'new') {
-    const data = await fakeProducts.getProductById(Number(brandId));
-    product = data.product as Product;
+    const data = await axios.get(singleBrandApi(brandId));
+    product = data.data as Product;
     if (!product) {
       notFound();
     }
