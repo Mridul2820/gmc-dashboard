@@ -20,10 +20,20 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { gmcAuthToken } from '@/constant';
 import { Product } from '@/constants/mock-api';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { toast } from 'sonner';
+import { object, string } from 'yup';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { createBrandApi } from '@/api/brandApis';
+import { useFormik } from 'formik';
+import Loading from '@/components/ui/loading';
+import { Label } from '@/components/ui/label';
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -33,28 +43,6 @@ const ACCEPTED_IMAGE_TYPES = [
   'image/webp'
 ];
 
-const formSchema = z.object({
-  image: z
-    .any()
-    .refine((files) => files?.length == 1, 'Image is required.')
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      '.jpg, .jpeg, .png and .webp files are accepted.'
-    ),
-  name: z.string().min(2, {
-    message: 'Brand name must be at least 2 characters.'
-  }),
-  category: z.string(),
-  price: z.number(),
-  description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.'
-  })
-});
-
 export default function ProductForm({
   initialData,
   pageTitle
@@ -62,21 +50,40 @@ export default function ProductForm({
   initialData: Product | null;
   pageTitle: string;
 }) {
-  const defaultValues = {
-    name: initialData?.name || '',
-    category: initialData?.category || '',
-    price: initialData?.price || 0,
-    description: initialData?.description || ''
-  };
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    values: defaultValues
+  const router = useRouter();
+  const token = Cookies.get(gmcAuthToken);
+  const [loading, setLoading] = useState(false);
+  const validationSchema = object({
+    name: string().required('Name cannot be empty!')
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const formik = useFormik({
+    initialValues: {
+      name: ''
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const res = await axios.post(createBrandApi, values, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (res.data.success === true) {
+          toast.success('Brand Added Successfully');
+          setLoading(false);
+          router.push('/dashboard/brand');
+        }
+      } catch (error: any) {
+        setLoading(false);
+        toast.error(
+          error.response.data.error || error.response.data.errors[0].message
+        );
+      }
+    }
+  });
 
   return (
     <Card className='mx-auto w-full'>
@@ -86,17 +93,8 @@ export default function ProductForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <FormField
-              control={form.control}
-              name='image'
-              render={({ field }) => (
-                <div className='space-y-6'>
-                  <FormItem className='w-full'>
-                    <FormLabel>Images</FormLabel>
-                    <FormControl>
-                      <FileUploader
+        <form onSubmit={formik.handleSubmit} className='space-y-8'>
+          {/* <FileUploader
                         value={field.value}
                         onValueChange={field.onChange}
                         maxFiles={4}
@@ -106,32 +104,28 @@ export default function ProductForm({
                         // pass the onUpload function here for direct upload
                         // onUpload={uploadFiles}
                         // disabled={isUploading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
+                      /> */}
 
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-              <FormField
-                control={form.control}
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='space-y-2'>
+              <Label htmlFor='name'>Name</Label>
+              <Input
+                id='name'
                 name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Brand name</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Enter Brand name' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                type='text'
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                placeholder='Enter brand name'
               />
+              {formik.touched.name && formik.errors.name ? (
+                <p className='error-message'>{formik.errors.name}</p>
+              ) : null}
             </div>
-            <Button type='submit'>Add Brand</Button>
-          </form>
-        </Form>
+          </div>
+          <Button type='submit' disabled={loading}>
+            {loading ? <Loading /> : 'Add Brand'}
+          </Button>
+        </form>
       </CardContent>
     </Card>
   );
