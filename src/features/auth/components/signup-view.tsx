@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import UserAuthForm from './user-auth-form';
+import SignUpForm from './signup-form';
 
 export const metadata: Metadata = {
   title: 'Authentication',
   description: 'Authentication forms built using the components.'
 };
 
-export default function SignInViewPage({ stars }: { stars: number }) {
+export default function SignUpViewPage() {
   return (
     <div className='relative h-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <div className='flex h-full items-center p-4 lg:p-8'>
@@ -35,7 +34,7 @@ export default function SignInViewPage({ stars }: { stars: number }) {
               Enter your email below to create your account
             </p>
           </div>
-          <UserAuthForm />
+          <SignUpForm />
         </div>
       </div>
     </div>

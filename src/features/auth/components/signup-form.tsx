@@ -14,7 +14,7 @@ import { gmcAuthToken, validEmailRegex } from '@/constant';
 import { loginAPi } from '@/api/authApis';
 import Link from 'next/link';
 
-export default function UserAuthForm() {
+export default function SignUpForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const validationSchema = object({
