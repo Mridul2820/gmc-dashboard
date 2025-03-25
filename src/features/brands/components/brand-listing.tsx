@@ -2,7 +2,7 @@ import { Product } from '@/constants/data';
 import { fakeProducts } from '@/constants/mock-api';
 import { searchParamsCache } from '@/lib/searchparams';
 import { DataTable as ProductTable } from '@/components/ui/table/data-table';
-import { columns } from './product-tables/columns';
+import { columns } from './brands-tables/columns';
 
 type ProductListingPage = {};
 
