@@ -14,8 +14,8 @@ export type Product = {
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
-    title: 'Product',
-    url: '/dashboard/product',
+    title: 'Brand',
+    url: '/dashboard/brand',
     icon: 'product',
     shortcut: ['p', 'p'],
     isActive: false,

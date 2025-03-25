@@ -46,7 +46,7 @@ const formSchema = z.object({
       '.jpg, .jpeg, .png and .webp files are accepted.'
     ),
   name: z.string().min(2, {
-    message: 'Product name must be at least 2 characters.'
+    message: 'Brand name must be at least 2 characters.'
   }),
   category: z.string(),
   price: z.number(),
@@ -120,80 +120,16 @@ export default function ProductForm({
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Product Name</FormLabel>
+                    <FormLabel>Brand name</FormLabel>
                     <FormControl>
-                      <Input placeholder='Enter product name' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='category'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select
-                      onValueChange={(value) => field.onChange(value)}
-                      value={field.value[field.value.length - 1]}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Select categories' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value='beauty'>Beauty Products</SelectItem>
-                        <SelectItem value='electronics'>Electronics</SelectItem>
-                        <SelectItem value='clothing'>Clothing</SelectItem>
-                        <SelectItem value='home'>Home & Garden</SelectItem>
-                        <SelectItem value='sports'>
-                          Sports & Outdoors
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='price'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.01'
-                        placeholder='Enter price'
-                        {...field}
-                      />
+                      <Input placeholder='Enter Brand name' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Enter product description'
-                      className='resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type='submit'>Add Product</Button>
+            <Button type='submit'>Add Brand</Button>
           </form>
         </Form>
       </CardContent>
